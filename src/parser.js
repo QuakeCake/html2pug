@@ -1,6 +1,9 @@
 const DOCUMENT_TYPE_NODE = '#documentType'
 const TEXT_NODE = '#text'
 const DIV_NODE = 'div'
+const IF_NODE = 'if'
+const ELSE_NODE = 'else'
+const UNLESS_NODE = 'unless'
 const COMMENT_NODE = '#comment'
 const COMMENT_NODE_PUG = '//'
 
@@ -197,6 +200,38 @@ class Parser {
     return this.formatPugNode(pugNode, value, level)
   }
 
+  /**
+   * createCondition formats pug conditionals.
+   * In the html they are used as <if condition="true"></if>
+   */
+  createCondition(node, level) {
+    const { tagName, attrs } = node
+    let pugNode = tagName
+
+    for (const attr of attrs) {
+      const { name, value } = attr
+
+      switch (name) {
+        // Check for `if` to support else if statements
+        case 'if':
+          if (tagName === ELSE_NODE) {
+            pugNode += ` if`
+          }
+          break
+        case 'condition':
+          pugNode += ` ${value}`
+          break
+      }
+    }
+
+    if (hasSingleTextNodeChild(node)) {
+      let text = this.createText(node.childNodes[0], level + 1)
+      pugNode += `\n${text}`
+    }
+
+    return pugNode
+  }
+
   parseNode(node, level) {
     const { nodeName } = node
 
@@ -209,6 +244,11 @@ class Parser {
 
       case TEXT_NODE:
         return this.createText(node, level)
+
+      case IF_NODE:
+      case ELSE_NODE:
+      case UNLESS_NODE:
+        return this.createCondition(node, level)
 
       default:
         return this.createElement(node, level)
