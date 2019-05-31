@@ -207,6 +207,7 @@ class Parser {
   createCondition(node, level) {
     const { tagName, attrs } = node
     let pugNode = tagName
+    const indent = this.getIndent(level)
 
     for (const attr of attrs) {
       const { name, value } = attr
@@ -229,7 +230,7 @@ class Parser {
       pugNode += `\n${text}`
     }
 
-    return pugNode
+    return `${indent}${pugNode}`
   }
 
   parseNode(node, level) {
