@@ -1,4 +1,35 @@
-# html2pug [![Build Status](https://travis-ci.org/izolate/html2pug.svg?branch=master)](https://travis-ci.org/izolate/html2pug)
+# html2pug [![Build Status](https://travis-ci.org/QuakeCake/html2pug.svg?branch=master)](https://travis-ci.org/QuakeCake/html2pug)
+
+## Why the fork?
+
+I needed an implementation of this module that would support conditionals so I modified it. 
+
+Not sure if the original author wants this feature pulled into the main repo so I'm waiting for a reply [here](https://github.com/izolate/html2pug/issues/38)
+
+### Conditionals Usage
+
+You can use the made up html tags `<if>` `<else>` `<unless>` and having the condition in the condition attribute
+
+This HTML:
+
+```html
+<if condition="false">Will not be shown</if>
+<else if condition="true">Will be shown</else>
+<else>Will never be shown</else>
+```
+
+Will become:
+
+```pug
+if false
+  | Will not be shown
+else if true
+  | Will be shown
+else
+  | Will never be shown
+```
+
+## What does it do?
 
 Converts **HTML** to **Pug** templating language (_formerly Jade_).  
 Requires Node.js version `7.6` or higher.

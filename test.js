@@ -184,3 +184,36 @@ test('collapses boolean attributes', t => {
 
   t.is(generated, expected)
 })
+
+test('converts conditional html attributes', t => {
+  const ifgenerated = html2pug(`<if condition="false">Will not be shown</if>`, {
+    fragment: true,
+  })
+  const ifexpected = `if false\n  | Will not be shown`
+
+  t.is(ifgenerated, ifexpected)
+
+  const elsegenerated = html2pug(
+    `<if condition="false">Will not be shown</if><else>Will be shown</else>`,
+    { fragment: true }
+  )
+  const elseexpected = `if false\n  | Will not be shown\nelse\n  | Will be shown`
+
+  t.is(elsegenerated, elseexpected)
+
+  const unlessgenerated = html2pug(
+    `<unless condition="false">Will be shown</unless>`,
+    { fragment: true }
+  )
+  const unlessexpected = `unless false\n  | Will be shown`
+
+  t.is(unlessgenerated, unlessexpected)
+
+  const elseifgenerated = html2pug(
+    `<if condition="false">Will not be shown</if><else if condition="true">Will be shown</else>`,
+    { fragment: true }
+  )
+  const elseifexpected = `if false\n  | Will not be shown\nelse if true\n  | Will be shown`
+
+  t.is(elseifgenerated, elseifexpected)
+})
